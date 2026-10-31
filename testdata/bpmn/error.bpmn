@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <error id="errBoom" name="业务失败" errorCode="BOOM"/>
+  <process id="error-demo" name="错误边界" isExecutable="true">
+    <startEvent id="start"/>
+    <serviceTask id="st_risky" name="有风险的操作" camunda:class="boom"/>
+    <boundaryEvent id="b_catch" attachedToRef="st_risky">
+      <errorEventDefinition errorRef="errBoom"/>
+    </boundaryEvent>
+    <serviceTask id="st_recover" name="兜底处理" camunda:class="noop"/>
+    <endEvent id="end_ok"/>
+    <endEvent id="end_caught"/>
+    <sequenceFlow id="f1" sourceRef="start" targetRef="st_risky"/>
+    <sequenceFlow id="f2" sourceRef="st_risky" targetRef="end_ok"/>
+    <sequenceFlow id="fb" sourceRef="b_catch" targetRef="st_recover"/>
+    <sequenceFlow id="f3" sourceRef="st_recover" targetRef="end_caught"/>
+  </process>
+</definitions>

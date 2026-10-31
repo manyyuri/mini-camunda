@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <process id="techfail-demo" name="技术失败重试" isExecutable="true">
+    <startEvent id="start"/>
+    <serviceTask id="st_flaky" name="不稳定服务" camunda:class="flaky" camunda:asyncBefore="true">
+      <extensionElements>
+        <camunda:failedJobRetryTimeCycle>R3/PT1S</camunda:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <endEvent id="end"/>
+    <sequenceFlow id="f1" sourceRef="start" targetRef="st_flaky"/>
+    <sequenceFlow id="f2" sourceRef="st_flaky" targetRef="end"/>
+  </process>
+</definitions>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <process id="callee" name="被调子流程" isExecutable="true">
+    <startEvent id="c_start"/>
+    <serviceTask id="c_work" name="子流程工作" camunda:class="setcy"/>
+    <sequenceFlow id="cf1" sourceRef="c_start" targetRef="c_work"/>
+    <sequenceFlow id="cf2" sourceRef="c_work" targetRef="c_end"/>
+    <endEvent id="c_end"/>
+  </process>
+</definitions>

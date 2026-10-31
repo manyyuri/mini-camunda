@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <process id="parallel-demo" name="并行网关" isExecutable="true">
+    <startEvent id="start"/>
+    <parallelGateway id="fork"/>
+    <parallelGateway id="join"/>
+    <serviceTask id="st_a" name="A支路" camunda:class="noop"/>
+    <serviceTask id="st_b" name="B支路" camunda:class="noop"/>
+    <endEvent id="end"/>
+    <sequenceFlow id="f1" sourceRef="start" targetRef="fork"/>
+    <sequenceFlow id="f2" sourceRef="fork" targetRef="st_a"/>
+    <sequenceFlow id="f3" sourceRef="fork" targetRef="st_b"/>
+    <sequenceFlow id="f4" sourceRef="st_a" targetRef="join"/>
+    <sequenceFlow id="f5" sourceRef="st_b" targetRef="join"/>
+    <sequenceFlow id="f6" sourceRef="join" targetRef="end"/>
+  </process>
+</definitions>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <message id="mGo" name="go-msg"/>
+  <process id="message-demo" name="消息等待" isExecutable="true">
+    <startEvent id="start"/>
+    <receiveTask id="rt_wait" name="等待消息" messageRef="mGo"/>
+    <endEvent id="end"/>
+    <sequenceFlow id="f1" sourceRef="start" targetRef="rt_wait"/>
+    <sequenceFlow id="f2" sourceRef="rt_wait" targetRef="end"/>
+  </process>
+</definitions>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <process id="call-demo" name="调用活动" isExecutable="true">
+    <startEvent id="start"/>
+    <callActivity id="call_sub" name="调用被调流程" calledElement="callee">
+      <extensionElements>
+        <camunda:in source="x" target="cx"/>
+        <camunda:out source="cy" target="y"/>
+      </extensionElements>
+    </callActivity>
+    <endEvent id="end"/>
+    <sequenceFlow id="f1" sourceRef="start" targetRef="call_sub"/>
+    <sequenceFlow id="f2" sourceRef="call_sub" targetRef="end"/>
+  </process>
+</definitions>

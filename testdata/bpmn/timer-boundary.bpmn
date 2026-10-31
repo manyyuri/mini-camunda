@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <process id="timerb-demo" name="超时中断边界" isExecutable="true">
+    <startEvent id="start"/>
+    <userTask id="ut_wait" name="等待人工" camunda:assignee="tester"/>
+    <boundaryEvent id="b_timeout" attachedToRef="ut_wait">
+      <timerEventDefinition>
+        <timeDuration>PT1.5S</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <serviceTask id="st_autorefuse" name="超时自动拒绝" camunda:class="noop"/>
+    <endEvent id="end_timeout"/>
+    <endEvent id="end_manual"/>
+    <sequenceFlow id="f1" sourceRef="start" targetRef="ut_wait"/>
+    <sequenceFlow id="f2" sourceRef="ut_wait" targetRef="end_manual"/>
+    <sequenceFlow id="fb" sourceRef="b_timeout" targetRef="st_autorefuse"/>
+    <sequenceFlow id="f3" sourceRef="st_autorefuse" targetRef="end_timeout"/>
+  </process>
+</definitions>

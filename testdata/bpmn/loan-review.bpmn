@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+             targetNamespace="http://mini-camunda.demo/loan">
+  <message id="msgRemind" name="催办"/>
+  <process id="loan-review" name="贷款复核流程" isExecutable="true">
+    <startEvent id="start" name="申请提交"/>
+    <serviceTask id="st_auto" name="自动风控" camunda:class="risk-check" camunda:asyncBefore="true"/>
+    <exclusiveGateway id="gw_amount" name="金额判断" default="flowSmall"/>
+    <sequenceFlow id="flowStart" sourceRef="start" targetRef="st_auto"/>
+    <sequenceFlow id="flowAuto" sourceRef="st_auto" targetRef="gw_amount"/>
+    <sequenceFlow id="flowLarge" name="金额≥10万" sourceRef="gw_amount" targetRef="ut_review">
+      <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${riskScore >= 100}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flowSmall" name="小额" sourceRef="gw_amount" targetRef="et_credit"/>
+    <userTask id="ut_review" name="人工复核" camunda:assignee="${reviewer}" camunda:candidateGroups="risk,admin"/>
+    <boundaryEvent id="b_remind" name="催办" attachedToRef="ut_review" cancelActivity="false">
+      <messageEventDefinition messageRef="msgRemind"/>
+    </boundaryEvent>
+    <boundaryEvent id="b_timeout" name="超时10分钟" attachedToRef="ut_review">
+      <timerEventDefinition>
+        <timeDuration>PT10M</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flowRemind" sourceRef="b_remind" targetRef="st_notify_user"/>
+    <serviceTask id="st_notify_user" name="发送催办通知" camunda:class="noop"/>
+    <endEvent id="end_remind" name="催办已发送"/>
+    <sequenceFlow id="flowNotifyEnd" sourceRef="st_notify_user" targetRef="end_remind"/>
+    <sequenceFlow id="flowTimeout" sourceRef="b_timeout" targetRef="st_timeout_refuse"/>
+    <serviceTask id="st_timeout_refuse" name="超时自动拒绝" camunda:class="noop"/>
+    <sequenceFlow id="flowTimeoutRefuse" sourceRef="st_timeout_refuse" targetRef="end_refused"/>
+    <sequenceFlow id="flowReviewDone" sourceRef="ut_review" targetRef="gw_decision"/>
+    <exclusiveGateway id="gw_decision" name="复核结论" default="flowRefuse"/>
+    <sequenceFlow id="flowApprove" name="通过" sourceRef="gw_decision" targetRef="st_submit">
+      <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flowRefuse" name="拒绝" sourceRef="gw_decision" targetRef="st_refuse"/>
+    <serviceTask id="st_submit" name="放款提交" camunda:class="noop"/>
+    <serviceTask id="st_refuse" name="发送拒绝通知" camunda:class="noop"/>
+    <sequenceFlow id="flowSubmitDone" sourceRef="st_submit" targetRef="end_done"/>
+    <sequenceFlow id="flowRefuseDone" sourceRef="st_refuse" targetRef="end_refused"/>
+    <serviceTask id="et_credit" name="外部征信查询" camunda:type="external" camunda:topic="credit-check"/>
+    <sequenceFlow id="flowCreditDone" sourceRef="et_credit" targetRef="gw_credit"/>
+    <exclusiveGateway id="gw_credit" name="征信结论" default="flowCreditRefuse"/>
+    <sequenceFlow id="flowCreditOk" name="征信通过" sourceRef="gw_credit" targetRef="st_submit">
+      <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${creditOk}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flowCreditRefuse" sourceRef="gw_credit" targetRef="st_refuse"/>
+    <endEvent id="end_done" name="放款完成"/>
+    <endEvent id="end_refused" name="已拒绝"/>
+  </process>
+</definitions>

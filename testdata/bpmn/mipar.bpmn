@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <process id="mipar-demo" name="并行多实例" isExecutable="true">
+    <startEvent id="start"/>
+    <serviceTask id="st_mipar" name="并行处理" camunda:class="noop">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>3</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </serviceTask>
+    <endEvent id="end"/>
+    <sequenceFlow id="f1" sourceRef="start" targetRef="st_mipar"/>
+    <sequenceFlow id="f2" sourceRef="st_mipar" targetRef="end"/>
+  </process>
+</definitions>

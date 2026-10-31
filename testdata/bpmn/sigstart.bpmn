@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <signal id="sAlert" name="alert-sig"/>
+  <process id="sigstart-demo" name="信号启动" isExecutable="true">
+    <startEvent id="sig_start">
+      <signalEventDefinition signalRef="sAlert"/>
+    </startEvent>
+    <endEvent id="end"/>
+    <sequenceFlow id="f1" sourceRef="sig_start" targetRef="end"/>
+  </process>
+</definitions>

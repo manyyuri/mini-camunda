@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <process id="timerstart-demo" name="定时启动" isExecutable="true">
+    <startEvent id="timer_start">
+      <timerEventDefinition>
+        <timeDuration>PT1S</timeDuration>
+      </timerEventDefinition>
+    </startEvent>
+    <serviceTask id="st_boot" name="自启任务" camunda:class="noop"/>
+    <endEvent id="end"/>
+    <sequenceFlow id="f1" sourceRef="timer_start" targetRef="st_boot"/>
+    <sequenceFlow id="f2" sourceRef="st_boot" targetRef="end"/>
+  </process>
+</definitions>

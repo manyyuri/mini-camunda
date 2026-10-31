@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <process id="term-demo" name="终止结束" isExecutable="true">
+    <startEvent id="start"/>
+    <parallelGateway id="fork"/>
+    <serviceTask id="st_left" name="左支路" camunda:class="noop"/>
+    <userTask id="ut_right" name="右支路等待" camunda:assignee="who"/>
+    <endEvent id="end_term">
+      <terminateEventDefinition/>
+    </endEvent>
+    <sequenceFlow id="f1" sourceRef="start" targetRef="fork"/>
+    <sequenceFlow id="f2" sourceRef="fork" targetRef="st_left"/>
+    <sequenceFlow id="f3" sourceRef="fork" targetRef="ut_right"/>
+    <sequenceFlow id="f4" sourceRef="st_left" targetRef="end_term"/>
+    <sequenceFlow id="f5" sourceRef="ut_right" targetRef="end_term"/>
+  </process>
+</definitions>

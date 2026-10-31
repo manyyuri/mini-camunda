@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <signal id="sAlert" name="alert-sig"/>
+  <process id="signal-demo" name="信号广播" isExecutable="true">
+    <startEvent id="start"/>
+    <intermediateCatchEvent id="catch_alert" name="捕获告警">
+      <signalEventDefinition signalRef="sAlert"/>
+    </intermediateCatchEvent>
+    <endEvent id="end"/>
+    <sequenceFlow id="f1" sourceRef="start" targetRef="catch_alert"/>
+    <sequenceFlow id="f2" sourceRef="catch_alert" targetRef="end"/>
+  </process>
+</definitions>

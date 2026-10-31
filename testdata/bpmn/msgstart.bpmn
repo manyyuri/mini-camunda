@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="http://mini-camunda.test">
+  <message id="mKick" name="kick-msg"/>
+  <process id="msgstart-demo" name="消息启动" isExecutable="true">
+    <startEvent id="msg_start">
+      <messageEventDefinition messageRef="mKick"/>
+    </startEvent>
+    <serviceTask id="st_onmsg" name="消息到达" camunda:class="noop"/>
+    <endEvent id="end"/>
+    <sequenceFlow id="f1" sourceRef="msg_start" targetRef="st_onmsg"/>
+    <sequenceFlow id="f2" sourceRef="st_onmsg" targetRef="end"/>
+  </process>
+</definitions>
